@@ -37,11 +37,17 @@
           />
         </label>
       </sui-form-field>
-      <sui-button primary type="submit">Create User</sui-button>
+      <sui-button primary button-sub type="submit" @click="handleSubmit">
+        Create User
+      </sui-button>
     </sui-form>
-    <sui-message v-if="submitted">
+    <sui-message v-if="submitted" success success-message>
       <sui-message-header>Success</sui-message-header>
-      <p message>User has been created</p>
+      <p>User has been created</p>
+    </sui-message>
+    <sui-message v-if="error" error error-message>
+      <sui-message-header>Error</sui-message-header>
+      <p>{{ error }}</p>
     </sui-message>
   </div>
 </template>
@@ -56,20 +62,28 @@ export default {
       submitted: false,
       name: '',
       email: '',
-      password: ''
+      password: '',
+      error: false
     };
   },
   props: ['backend_url'],
   methods: {
     async handleSubmit() {
-      console.log(this.name, this.email, this.password);
-      const user = await axios.post(this.backend_url + '/user', {
-        name: this.name,
-        email: this.email,
-        password: this.password
-      });
-      console.log(user);
-      this.submitted = true;
+      try {
+        await this.createUser({
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+        this.submitted = true;
+        this.error = false;
+      } catch (error) {
+        this.error = error.response.data.message;
+        this.submitted = false;
+      }
+    },
+    createUser(user) {
+      return axios.post(this.backend_url + '/user', user);
     }
   }
 };
