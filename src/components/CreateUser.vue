@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'CreateUser',
   data() {
@@ -57,9 +59,16 @@ export default {
       password: ''
     };
   },
+  props: ['backend_url'],
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       console.log(this.name, this.email, this.password);
+      const user = await axios.post(this.backend_url + '/user', {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      });
+      console.log(user);
       this.submitted = true;
     }
   }

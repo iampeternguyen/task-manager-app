@@ -1,6 +1,6 @@
 <template>
   <sui-container>
-    <create-user></create-user>
+    <create-user :backend_url="BACKEND_URL"></create-user>
   </sui-container>
 </template>
 
@@ -8,6 +8,11 @@
 import CreateUser from './components/CreateUser';
 export default {
   name: 'App',
+  data() {
+    return {
+      BACKEND_URL: 'http://127.0.0.1:3000'
+    };
+  },
   components: {
     CreateUser
   }
